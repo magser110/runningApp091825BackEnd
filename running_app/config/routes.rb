@@ -11,5 +11,7 @@ Rails.application.routes.draw do
 
   post '/login', to: 'sessions#create'
   # resorces :runs
-  resorces :users, only: [:create]
+  resources :users, only: [:create]
+
+  resources :runs
 end
