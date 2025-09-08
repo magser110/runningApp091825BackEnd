@@ -13,11 +13,11 @@ RSpec.describe "Runs", type: :request do
     before do
       create_list(:run, 10)
       get "/runs"
-      @distance = JSON.parse(response.body)
+      @response_body = JSON.parse(response.body)
     end
 
     it "returns runs" do
-      @distance.each do |run|
+      @response_body.each do |run|
         expect(run.keys).to contain_exactly(*expected_run_structure.keys)
       end
     end
@@ -27,24 +27,24 @@ RSpec.describe "Runs", type: :request do
     end
 
     it "does not return empty if runs exist" do
-      expect(@distance, @time).not_to be_empty
+      expect(@response_body).not_to be_empty
     end
 
     it "returns 10 runs" do 
-      expect(@distance.size, @time.size).to eq(10)
+      expect(@response_body.size).to eq(10)
     end
   end
 
   describe "GET/show" do
-    let (:run_id) { create(:run).id }
+    let (:run) { create(:run) }
 
-    before do 
-      get "/runs/#{run_id}"
-      @distance = JSON.parse(response.body)
+    before do  
+      get "/runs/#{run.id}"
+      @response_body = JSON.parse(response.body)
     end
 
     it "checks for the correct structure" do
-      expect(@distance.keys).to contain_exactly(*expected_run_structure.keys)
+      expect(@response_body.keys).to contain_exactly(*expected_run_structure.keys)
     end
 
     it "returns http success" do
@@ -55,11 +55,11 @@ RSpec.describe "Runs", type: :request do
   describe "POST/create" do
     before do 
       post "/runs", params: attributes_for(:run)
-      @distance = JSON.parse(response.body)
+      @response_body = JSON.parse(response.body)
     end
 
     it "checks for the correct structure" do
-      expect(@distance.keys).to contain_exactly(*expected_run_structure.keys)
+      expect(@response_body.keys).to contain_exactly(*expected_run_structure.keys)
     end
 
     it "count of runs should increase by 1" do
@@ -67,25 +67,26 @@ RSpec.describe "Runs", type: :request do
     end
 
     it "returns http success" do
-      expect(response).to have_http_status(:success)
+      expect(response).to have_http_status(:created)
     end
   end
 
   describe "PUT/update" do
-    let (:run_id) { create(:run).id }
+    let (:run) { create(:run) }
 
     before do
-      put "/runs/#{run_id}", params: { distance: 'updated distance' }
-      @distance = JSON.parse(response.body)
+      put "/runs/#{run.id}", params: { distance: 5 }
+      @response_body = JSON.parse(response.body)
     end
-  end
+
 
   it "checks for the correct structure" do 
-    expect( @distance.keys).to contain_exactly(*expected_run_structure.keys)
+    Rails.logger.debug @response_body
+    expect( @response_body.keys).to contain_exactly(*expected_run_structure.keys)
   end
 
   it "checks if the distance is updated" do
-    expect(Run.find(run_id).distance).to eq('updated distance')
+    expect(run.reload.distance).to eq(5)
   end
 
   it "returns http success" do
@@ -94,17 +95,20 @@ RSpec.describe "Runs", type: :request do
 end
 
 describe "DELETE/destroy" do
-  let (:run_id) { create(:run).id }
+  let (:run) { create(:run) }
 
   before do 
     delete "/runs/#{run_id}"
   end
 
   it "decrements the count of runs by 1" do
-    expect(Run.count).to eq(0)
+    expect{
+      delete "runs/#{run.id}"
+    }.to change(Run.count).by(-1)
   end
 
   it "returns http success" do
+    delete "/runs/#{run.id}"
     expect(response).to have_http_status(:success)
   end
 end
