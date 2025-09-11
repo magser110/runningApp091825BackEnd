@@ -53,3 +53,4 @@ end
 gem 'bcrypt'
 gem 'jwt'
 gem 'blueprinter'
+gem 'rack-cors'
