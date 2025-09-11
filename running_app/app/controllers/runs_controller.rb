@@ -1,5 +1,5 @@
 class RunsController < ApplicationController
-  before_action :set_run, only: [:show, :update, :destroy]
+  before_action :authenticate_request, except: [index]
 
   def index
     runs = Run.all
