@@ -84,6 +84,7 @@ RSpec.describe "Runs", type: :request do
     Rails.logger.debug @response_body
     expect( @response_body.keys).to contain_exactly(*expected_run_structure.keys)
   end
+end
 
   it "checks if the distance is updated" do
     expect(run.reload.distance).to eq(5)

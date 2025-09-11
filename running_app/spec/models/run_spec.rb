@@ -19,7 +19,7 @@ RSpec.describe Run, type: :model do
     it "is invalid when distance is too far" do
       run = build(:run, distance: 1 * 350) 
       run.valid?
-      expect(run.errors[:body]).to include("is too far (maximum is 350 miles)")
+      expect(run.errors[:distance]).to include("is too far (maximum is 350 miles)")
     end
 
     it "is invalid without a time" do
@@ -29,13 +29,13 @@ RSpec.describe Run, type: :model do
     end
 
     it "is invalid if time is not positive" do
-      run = build(:run, time: time > 0)
+      run = build(:run, time: -1)
       run.valid?
       expect(run.errors[:time]).to include("time must be positive")
     end
 
     it "is invalid if time is too long" do
-      run = build(:run, time > 80.hours)
+      run = build(:run, time: 81.hours)
       run.valid?
       expect(run.errors[:time]).to include("time must be less than 80 hours")
     end
