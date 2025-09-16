@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_04_190359) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_15_193629) do
   create_table "runs", force: :cascade do |t|
     t.integer "distance"
     t.integer "time"
@@ -23,5 +23,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_190359) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "email"
+    t.float "height"
+    t.float "weight"
+    t.string "gender"
+    t.integer "age"
   end
 end
