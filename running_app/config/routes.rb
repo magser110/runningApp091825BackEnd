@@ -9,9 +9,14 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
+  post 'signup', to: 'users#create'
   post '/login', to: 'sessions#create'
   # resorces :runs
   resources :users, only: [:create]
 
-  resources :runs
+  resources :runs, only: [:index, :create] do
+    collection do
+      get 'stats'
+    end
+  end
 end

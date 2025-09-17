@@ -4,8 +4,10 @@ class Run < ApplicationRecord
   validates :distance, presence: true, numericality: { greater_than: 0 }
   validates :time, presence: true, numericality: { greater_than: 0 }  
   validates :date, presence: true
-  validates :distance_limit
-  validates :time_params
+
+
+  validate :distance_limit
+  validate :time_params
 
   before_save :calculate_metrics
 
@@ -62,7 +64,7 @@ class Run < ApplicationRecord
 
     #gender adjustment, men typically burn more calories
     gender_adjustment = user.gender == 'male' ? 1.1 : 1.0
-    (calories * age_adjust * gender_adjustment).round
+    (calories * age_adjustment * gender_adjustment).round
   end
 
   def distance_limit
