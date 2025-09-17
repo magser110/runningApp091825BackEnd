@@ -12,7 +12,7 @@ class User < ApplicationRecord
 
   has_many :runs, dependent: :destroy
 
-  validates :password_confirmation_matches, on: :create
+  validate :password_confirmation_matches, on: :create
 
   private 
 

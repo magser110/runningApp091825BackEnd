@@ -5,10 +5,8 @@ class RunsController < ApplicationController
   def index
     result = RunService::Base.filter_runs(params)
     if result.success?
-      render json: {
-        runs: RunBlueprint.render_as_hash(result.payload, view: :normal, current_user: @current_user), 
-        total_stats: calculate_total_stats(result.payload)
-      }, status: :ok
+      render_success(payload: RunBlueprint.render_as_hash(result.payload, view: :normal, current_user: @current_user, total_stats: calculate_total_stats(result.payload)
+      ), status: :ok)
     else
       render json: { errors: result.errors }, status: :unprocessable_entity
     end
@@ -74,18 +72,34 @@ class RunsController < ApplicationController
     params.permit(:distance, :time, :date)
   end
 
-  def calculate_total_stats(runs)
-    # total_distance = runs.sum(:distance)
-    # total_time = runs.sum(:time)
+def calculate_total_stats(runs)
+  total_distance = runs.sum(:distance).to_f
+  total_time     = runs.sum(:time).to_f
 
-    {
-      total_runs: runs.count,
-      total_distance: runs.sum(:distance).round(2), 
-      total_time: runs.sum(:time).round(2),
-      average_pace: runs.average(:pace).round(2),
-      avg_speed: runs.average(:average_speed).round(2),
-      total_calories: runs.sum(:calculated_calories).to_i,
-      total_steps: runs.sum(:calculated_steps).to_i
-    }
-  end
+  {
+    total_runs: runs.size,
+    total_distance: total_distance.round(2),
+    total_time: total_time.round(2),
+    average_pace: runs.any? ? (total_time / total_distance).round(2) : 0,
+    avg_speed: runs.any? ? (total_distance / total_time).round(2) : 0,
+    # total_calories: runs.sum(:calculated_calories).to_i, # if this is stored
+    # total_steps: runs.sum(:calculated_steps).to_i        # if this is stored
+  }
+end
+  # def calculate_total_stats(runs)
+  #   puts runs
+  #   # total_distance = runs.sum(:distance)
+  #   # total_time = runs.sum(:time)
+
+  #   {
+  #     total_runs: runs.count,
+  #     total_distance: runs.sum(:distance).round(2), 
+  #     total_time: runs.sum(:time).round(2),
+  #     average_pace: runs.average(:pace).round(2),
+  #     avg_speed: runs.average(:average_speed).round(2),
+  #     total_calories: runs.sum(:calculated_calories).to_i,
+  #     total_steps: runs.sum(:calculated_steps).to_i
+  #   }
+  # end
+
 end

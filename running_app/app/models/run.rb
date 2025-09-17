@@ -9,12 +9,14 @@ class Run < ApplicationRecord
   validate :distance_limit
   validate :time_params
 
-  before_save :calculate_metrics
+  # before_save :calculate_metrics
+
+
 
   #pace in min/km
   def pace 
-    return 0 if distance.zero?
-    (time / 60) / distance
+    return 0 if self.distance.zero?
+    time / distance
   end
 
   #average speed in km/h (time assumed in minutes)
@@ -25,12 +27,12 @@ class Run < ApplicationRecord
 
   private
 
-  def calculate_metrics
-    self.pace = pace
-    self.average_speed = average_speed
-    self.calories_burned = calculated_calories
-    self.steps = calculated_steps
-  end
+  # def calculate_metrics
+  #   self.pace = pace
+  #   self.average_speed = average_speed
+  #   self.calories_burned = calculated_calories
+  #   self.steps = calculated_steps
+  # end
 
   def calculated_steps
     #calculate steps/stride length by user height and gender
