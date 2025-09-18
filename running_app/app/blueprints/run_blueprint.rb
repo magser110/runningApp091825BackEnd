@@ -4,7 +4,7 @@ class RunBlueprint < Blueprinter::Base
   identifier :id
 
   view :normal do
-    fields :distance, :time
+    fields :distance, :time, :date
     field :user do |run, options|
       options[:current_user]
     end

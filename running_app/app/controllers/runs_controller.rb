@@ -20,7 +20,7 @@ class RunsController < ApplicationController
   end
 
   def show
-    render json: RunBlueprint.render(run, view: :normal), status: :ok
+    render json: RunBlueprint.render(@run, view: :normal), status: :ok
   end
 
   def create 
@@ -30,25 +30,25 @@ class RunsController < ApplicationController
       render json: RunBlueprint.render(run, view: :normal), status: :created
 
     else
-      render json: {errores: run.errors.full_messages} , status: unprocessable_entity
+      render json: {errores: run.errors.full_messages} , status: :unprocessable_entity
     end
   end
 
   def update
-    if run.update(run_params)
-      render json: RunBlueprint.render(run, view: :normal), status: :ok
+    if @run.update(run_params)
+      render json: RunBlueprint.render(@run, view: :normal), status: :ok
 
     else 
-      render json: run.errors, status: :unprocessable_entity
+      render json: @run.errors, status: :unprocessable_entity
     end
   end
 
   def destroy
-    if run.destroy
+    if @run.destroy
       render json: { message: "run successfully deleted"}, status: :ok
 
     else
-      render json: run.errors, status: :unprocessable_entity
+      render json: @run.errors, status: :unprocessable_entity
     end
   end
 
@@ -63,13 +63,13 @@ class RunsController < ApplicationController
   end
 
   def set_run
-    run = Run.find(params[:id])
+    @run = Run.find(params[:id])
   end
 
   private
 
   def run_params
-    params.permit(:distance, :time, :date)
+    params.require(:run).permit(:distance, :time, :date, :total_stats)
   end
 
 def calculate_total_stats(runs)
@@ -101,5 +101,4 @@ end
   #     total_steps: runs.sum(:calculated_steps).to_i
   #   }
   # end
-
 end
