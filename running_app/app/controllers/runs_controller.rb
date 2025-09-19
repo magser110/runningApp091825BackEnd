@@ -36,8 +36,10 @@ class RunsController < ApplicationController
   end
 
   def update
-    if @run.update(run_params)
-      render json: RunBlueprint.render(@run, view: :normal), status: :ok
+    puts @run.id
+    if @run.update!(run_params)
+      # render json: RunBlueprint.render(@run, view: :normal), status: :ok
+      render json: @run, status: :ok
 
     else 
       render json: @run.errors, status: :unprocessable_entity
