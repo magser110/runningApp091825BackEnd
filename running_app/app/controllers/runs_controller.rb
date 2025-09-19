@@ -24,6 +24,7 @@ class RunsController < ApplicationController
   end
 
   def create 
+
     run = current_user.runs.new(run_params)
 
     if run.save
@@ -69,14 +70,14 @@ class RunsController < ApplicationController
   private
 
   def run_params
-    params.require(:run).permit(:distance, :time, :date, :total_stats)
+    params.require(:run).permit(:distance, :time, :date)
   end
 
 def calculate_total_stats(runs)
   total_distance = runs.sum(:distance).to_f
   total_time     = runs.sum(:time).to_f
 
-  {
+  overall_stats = {
     total_runs: runs.size,
     total_distance: total_distance.round(2),
     total_time: total_time.round(2),
@@ -85,6 +86,20 @@ def calculate_total_stats(runs)
     # total_calories: runs.sum(:calculated_calories).to_i, # if this is stored
     # total_steps: runs.sum(:calculated_steps).to_i        # if this is stored
   }
+  individual_stats = runs.map do |run|
+    {
+      id: run.id,
+      distance: run.distance,
+      time: run.time,
+      date: run.date,
+      pace: run.pace.round(2),
+      average_speed: run.average_speed.round(2),
+      # calories_burned: run.calculated_calories.to_i,
+      # steps: run.calculated_steps.to_i
+
+  }
+end
+
 end
   # def calculate_total_stats(runs)
   #   puts runs
@@ -101,4 +116,5 @@ end
   #     total_steps: runs.sum(:calculated_steps).to_i
   #   }
   # end
+# }
 end
