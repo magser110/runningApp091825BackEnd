@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   post 'signup', to: 'users#create'
   post '/login', to: 'sessions#create'
+  get '/user_runs', to: 'runs#user_runs'
   resources :runs
   resources :users, only: [:create]
 

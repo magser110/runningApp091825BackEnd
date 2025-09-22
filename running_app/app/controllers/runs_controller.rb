@@ -2,6 +2,11 @@ class RunsController < ApplicationController
   before_action :authenticate_request, except: [:index, :show]
   before_action :set_run, only: [:show, :update, :destroy]
 
+  def user_runs
+    runs = @current_user.runs.order(created_at: :asc)
+    render json: RunBlueprint.render(runs, view: :normal), status: :ok
+  end
+
   def index
     result = RunService::Base.filter_runs(params)
     if result.success?
@@ -25,7 +30,7 @@ class RunsController < ApplicationController
 
   def create 
 
-    run = current_user.runs.new(run_params)
+    run = @current_user.runs.new(run_params)
 
     if run.save
       render json: RunBlueprint.render(run, view: :normal), status: :created

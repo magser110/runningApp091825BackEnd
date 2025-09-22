@@ -12,6 +12,7 @@ class UsersController < ApplicationController
       }, status: :created
       
     else
+      puts "User errors: #{user.errors.full_messages}"
       render json: { errors: user.errors.full_messages }, status: :unprocessable_entity 
     end
   end

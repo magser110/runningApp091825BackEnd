@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+    skip_before_action :authenticate_request, only: [:create]
+
   def create
     user = User.find_by(username: params[:username])
     if user&.authenticate(params[:password])
@@ -8,7 +10,7 @@ class SessionsController < ApplicationController
       render json: { error: "Unathorized" }, status: :unathorized
     end
   end
-
+  
   private 
 
   def jwt_encode(payload, exp = 24.hours.from_now)
